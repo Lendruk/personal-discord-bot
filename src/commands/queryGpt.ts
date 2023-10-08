@@ -50,7 +50,7 @@ export default {
       });
   
       const gptResponse = chatCompletion.choices.map(response => `${response.message.content}`).join("\n");
-      interaction.editReply(`Prompt: ${prompt.value} \n ${gptResponse}`);
+      interaction.editReply(`Prompt: ${prompt.value} \nAnswer:\n ${gptResponse} \nModel used: ${model.value}`);
     } catch(error) {  
       interaction.editReply(`Error prompting chatGPT`);
     }
