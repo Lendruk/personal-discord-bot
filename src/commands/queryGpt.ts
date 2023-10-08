@@ -1,4 +1,4 @@
-import { Interaction, RepliableInteraction, SlashCommandBuilder } from "discord.js";
+import { RepliableInteraction, SlashCommandBuilder } from "discord.js";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -32,12 +32,16 @@ export default {
       return;
     }
     
-    const chatCompletion = await openai.chat.completions.create({
-        messages: [{ role: "user", content: prompt.value }],
-        model: model.value,
-    });
-
-    const gptResponse = chatCompletion.choices.map(response => `${response.message.content}`).join("\n");
-    interaction.editReply(`prompt: ${prompt.value} \n ${gptResponse}`);
+    try {
+      const chatCompletion = await openai.chat.completions.create({
+          messages: [{ role: "user", content: prompt.value }],
+          model: model.value,
+      });
+  
+      const gptResponse = chatCompletion.choices.map(response => `${response.message.content}`).join("\n");
+      interaction.editReply(`Prompt: ${prompt.value} \n ${gptResponse}`);
+    } catch(error) {  
+      interaction.editReply(`Error prompting chatGPT`);
+    }
   },
 };
