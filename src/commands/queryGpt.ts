@@ -5,6 +5,17 @@ const openai = new OpenAI({
     apiKey: process.env.OPEN_AI_TOKEN,
 });
 
+type StringOption = {
+  name: string;
+  value: string;
+}
+
+type CommandOptionsPayload = {
+  options: {
+    data: StringOption[]
+  }
+}
+
 export default {
   command: new SlashCommandBuilder()
   .setName('gpt')
@@ -22,10 +33,10 @@ export default {
   ),
   executor: async (interaction: RepliableInteraction) => {
     await interaction.deferReply();
-    // TODO - fix types
-    const data = (interaction as any)['options'].data;
-    const model = data.find((payload: any) => payload.name === "model") ?? 'gpt-3.5-turbo';
-    const prompt = data.find((payload: any) => payload.name === "prompt");
+    const data = (interaction as RepliableInteraction & CommandOptionsPayload).options.data;
+    
+    const model = data.find((payload) => payload.name === "model")?.value ?? 'gpt-3.5-turbo';
+    const prompt = data.find((payload) => payload.name === "prompt");
 
     if(!prompt) {
       interaction.editReply("No prompt sent");
@@ -35,7 +46,7 @@ export default {
     try {
       const chatCompletion = await openai.chat.completions.create({
           messages: [{ role: "user", content: prompt.value }],
-          model: model.value,
+          model: model,
       });
   
       const gptResponse = chatCompletion.choices.map(response => `${response.message.content}`).join("\n");
