@@ -34,7 +34,7 @@ export default {
   executor: async (interaction: RepliableInteraction) => {
     await interaction.deferReply();
     const data = (interaction as RepliableInteraction & CommandOptionsPayload).options.data;
-    
+
     const model = data.find((payload) => payload.name === "model")?.value ?? 'gpt-3.5-turbo';
     const prompt = data.find((payload) => payload.name === "prompt");
 
@@ -50,7 +50,7 @@ export default {
       });
   
       const gptResponse = chatCompletion.choices.map(response => `${response.message.content}`).join("\n");
-      interaction.editReply(`Prompt: ${prompt.value} \nAnswer:\n ${gptResponse} \nModel used: ${model.value}`);
+      interaction.editReply(`Prompt: ${prompt.value} \nAnswer:\n ${gptResponse} \nModel used: ${model}`);
     } catch(error) {  
       interaction.editReply(`Error prompting chatGPT`);
     }
