@@ -38,6 +38,6 @@ export default {
     });
 
     const gptResponse = chatCompletion.choices.map(response => `${response.message.content}`).join("\n");
-    interaction.editReply(`prompt: ${prompt.value} \n ${gptResponse}`);
+    interaction.editReply(`Prompt: ${prompt.value} \nAnswer:\n ${gptResponse} \nModel used: ${model.value}`);
   },
 };
