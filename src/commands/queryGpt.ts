@@ -1,4 +1,4 @@
-import { RepliableInteraction, SlashCommandBuilder } from "discord.js";
+import { MessagePayload, RepliableInteraction, SlashCommandBuilder, Utils } from "discord.js";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -39,7 +39,7 @@ export default {
     const prompt = data.find((payload) => payload.name === "prompt");
 
     if(!prompt) {
-      interaction.editReply("No prompt sent");
+      await interaction.editReply("No prompt sent");
       return;
     }
     
@@ -50,9 +50,25 @@ export default {
       });
   
       const gptResponse = chatCompletion.choices.map(response => `${response.message.content}`).join("\n");
-      interaction.editReply(`Prompt: ${prompt.value} \nAnswer:\n ${gptResponse} \nModel used: ${model}`);
+      const formattedResponse = `Prompt: ${prompt.value} \nAnswer:\n${gptResponse} \nModel used: ${model}`;
+
+      const messageCount = Math.ceil(formattedResponse.length / 2000);
+      if(messageCount === 1) {
+        await interaction.editReply(formattedResponse);
+      } else {
+        for (let i=0; i < messageCount; i++) {
+          const currentIndex = i * 2000;
+          const message = formattedResponse.slice(currentIndex, currentIndex + 2000 > formattedResponse.length ? undefined : currentIndex + 2000);
+          if(i === 0) {
+            await interaction.editReply(message);
+          } else {
+            await interaction.channel?.send(message);
+          }
+        }
+      }
     } catch(error) {  
-      interaction.editReply(`Error prompting chatGPT`);
+      console.log(error);
+      await interaction.editReply(`Error prompting chatGPT`);
     }
   },
 };
