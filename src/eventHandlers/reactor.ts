@@ -1,9 +1,13 @@
 import { Base, Message } from "discord.js";
 import { DiscordEventHandler } from "../types/DiscordEventHandler";
 
-type ReactorResources = {
+type User = {
+  id: string;
+  chance: number;
   emojis: string[];
-  users: string[];
+}
+type ReactorResources = {
+  users: User[];
 }
 
 const resources = await Bun.file('./resources/reactor.json').json<ReactorResources>();
@@ -11,8 +15,10 @@ const resources = await Bun.file('./resources/reactor.json').json<ReactorResourc
 const reactor: DiscordEventHandler = {
   event: 'messageCreate',
   handler: (message: Message) => {
-    const { emojis, users } = resources;
-    if(users.includes(message.author.id)) {
+    const { users } = resources;
+    const user = users.find(user => user.id === message.author.id);
+    if(user && Math.random() <= user.chance) {
+      const { emojis } = user;
       message.react(emojis[Math.floor(Math.random() * (emojis.length - 0))]);
     }
   }
