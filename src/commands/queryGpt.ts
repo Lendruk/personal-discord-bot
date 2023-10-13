@@ -1,20 +1,6 @@
 import { MessagePayload, RepliableInteraction, SlashCommandBuilder, Utils } from "discord.js";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-    apiKey: process.env.OPEN_AI_TOKEN,
-});
-
-type StringOption = {
-  name: string;
-  value: string;
-}
-
-type CommandOptionsPayload = {
-  options: {
-    data: StringOption[]
-  }
-}
+import { openai } from "../util/openAI";
+import { CommandOptionsPayload } from "../types/DIscordCommand";
 
 export default {
   command: new SlashCommandBuilder()

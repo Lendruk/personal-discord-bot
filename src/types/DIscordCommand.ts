@@ -6,3 +6,14 @@ export type DiscordCommand = {
   command: SlashCommandBuilder,
   executor: CommandExecutor
 }
+
+export type CommandOptionsPayload = {
+  options: {
+    data: StringOption[]
+  }
+}
+
+type StringOption = {
+  name: string;
+  value: string;
+}
