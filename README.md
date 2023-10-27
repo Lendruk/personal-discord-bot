@@ -1,4 +1,5 @@
-# gptdiscordbot
+# personal discord bot
+Personal bot for a bunch of random utilities and inside jokes
 
 To install dependencies:
 

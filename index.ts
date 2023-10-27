@@ -2,6 +2,8 @@ import { Client, GatewayIntentBits, REST, Routes, Events, ClientEvents } from 'd
 import { readdir } from 'fs/promises';
 import { CommandExecutor, DiscordCommand } from './src/types/DIscordCommand';
 import { DiscordEventHandler } from './src/types/DiscordEventHandler';
+import { priceTracker } from './src/services/PriceTrackerService';
+import { initRest } from './src/rest/rest';
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages] });
 
 (async () => {
@@ -56,4 +58,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 	} catch (error) {
 		console.error(`Error registering commands: ${error}`);
 	}
+
+  await priceTracker.init(client);
+  initRest();
 })();
