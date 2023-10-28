@@ -8,6 +8,7 @@ export const initRest = () => {
   
   // Hook endpoint for price tracker backend to call
   fastify.post('/price-tracker', async (request, reply) => {
+    console.log("Received price tracker hook call");
     const body = request.body;
   
   

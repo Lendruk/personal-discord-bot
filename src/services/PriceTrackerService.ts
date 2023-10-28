@@ -1,5 +1,6 @@
 import { env } from "bun"
-import { Client } from "discord.js"
+import { APIEmbedField, Client, EmbedBuilder, strikethrough } from "discord.js"
+import { VendorToString } from "../util/priceTracker"
 
 type User = {
   priceTrackerId: number,
@@ -37,7 +38,7 @@ type VendorEntry = {
   productImageUrl: string,
   lastUpdated: number,
   availability: number,
-  history: ProductHistory,
+  history: ProductHistory[],
 }
 
 export type ProductUpdatePayload = { [index:string]: Product };
@@ -121,16 +122,39 @@ class PriceTrackerService {
       for(const watcher of product.watchers) {
         const user = await this.getUserByTrackerId(watcher);
         const discordUser =await this.discordClient?.users.fetch(user.discordId)
-  
+        
         if(discordUser) {
+          const fields: APIEmbedField[] = [];
+          const firstEntry = product.vendorEntries[0];
+          for(const entry of product.vendorEntries) {
+            fields.push({ name:`${VendorToString(entry.vendor)}`, value: this.formatEntryPrice(entry)});
+            // fields.push({ name: '\u200B', value: '\u200B' });
+          }
 
-          // TODO prettify update payload
-          discordUser.send(`Update: ${JSON.stringify(product)}`);
+          const embededProduct = new EmbedBuilder()
+          .setColor(0x0099FF)
+          .setTitle(`🚨 UPDATE 🚨 - ${firstEntry.fullName} (${product.sku})`)
+          .setDescription('---')
+          .setThumbnail(firstEntry.productImageUrl)
+          .addFields(
+            fields
+          )
+          .setTimestamp()
+          // .setFooter({ text: 'Good' });
+
+          discordUser.send({ embeds: [embededProduct]});
         }
       }
     }
 
   }
+
+  private formatEntryPrice(entry: VendorEntry): string {
+    
+    return entry.history.length > 0 ? `New: [${entry.price}€](${entry.url}) Old: ${strikethrough(entry.history[entry.history.length - 1].price.toString()+"€")}` : `[${entry.price}€](${entry.url})`;
+  }
+
 }
+
 
 export const priceTracker = new PriceTrackerService();

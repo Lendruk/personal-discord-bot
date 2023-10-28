@@ -23,9 +23,8 @@ export default {
     const fields: APIEmbedField[] = [];
     for(const entry of vendorEntries) {
       fields.push({ name:`${VendorToString(entry.vendor)}`, value: `[${entry.price}€](${entry.url})`});
-      fields.push({ name: '\u200B', value: '\u200B' });
+      // fields.push({ name: '\u200B', value: '\u200B' });
     }
-    console.log(url);
     const embededProduct = new EmbedBuilder()
     .setColor(0x0099FF)
     .setTitle(`Watching - ${firstEntry.fullName} (${firstEntry.sku})`)
