@@ -79,8 +79,29 @@ class PriceTrackerService {
 
     const parsedBody = await result.json();
 
-    console.log(parsedBody);
     return parsedBody as VendorEntry[];
+  }
+
+  public async getUserWatchlist(discordId: string): Promise<Product[]> {
+    const user  = await this.getUser(discordId);
+
+    let products: Product[] = [];
+    if(user) {
+      const response = await fetch(`${process.env.PRICE_TRACKER_URL as string}/users/${user.priceTrackerId}/watchlist`);
+      const parsedBody = await response.json();
+      products = parsedBody as Product[];
+    }
+
+    return products;
+  }
+
+  public async removeProductFromWatchlist(discordId: string, productSKU: string): Promise<void> {
+    const user = await this.getUser(discordId);
+    const response = await fetch(`${process.env.PRICE_TRACKER_URL as string}/users/${user?.priceTrackerId}/watchlist/${productSKU}`, { method: 'DELETE' });
+
+    if(response.status > 200) {
+      throw new Error("Error removing product from watchlist");
+    }
   }
 
   public async getUser(discordId: string): Promise<User | undefined> {
