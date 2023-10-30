@@ -27,7 +27,7 @@ export enum Vendor {
   PCDIGA
 }
 
-type VendorEntry = {
+export type VendorEntry = {
   id: number,
   universalId: number,
   price: number,
@@ -78,6 +78,12 @@ class PriceTrackerService {
     });
 
     const parsedBody = await result.json();
+
+    if(result.status === 400) {
+      throw new Error(`Vendor not supported by price tracker`);
+    } else if(result.status > 400) {
+      throw new Error(`Price tracker internal error`);
+    }
 
     return parsedBody as VendorEntry[];
   }

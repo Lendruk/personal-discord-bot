@@ -1,6 +1,6 @@
 import { APIEmbedField, EmbedBuilder, RepliableInteraction, SlashCommandBuilder } from "discord.js";
 import { CommandOptionsPayload, DiscordCommand } from "../types/DIscordCommand";
-import { priceTracker } from "../services/PriceTrackerService";
+import { VendorEntry, priceTracker } from "../services/PriceTrackerService";
 import { VendorToString } from "../util/priceTracker";
 
 export default {
@@ -16,8 +16,12 @@ export default {
       interaction.editReply("No url sent");
       return;
     }
-
-    const vendorEntries = await priceTracker.watchProduct(url.value, interaction.user.id);
+    let vendorEntries: VendorEntry[] = [];
+    try {
+      vendorEntries = await priceTracker.watchProduct(url.value, interaction.user.id);
+    } catch(error) {
+      interaction.editReply((error as Error).message);
+    }
     const firstEntry = vendorEntries[0];
 
     const fields: APIEmbedField[] = [];
