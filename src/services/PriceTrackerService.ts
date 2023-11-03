@@ -24,7 +24,8 @@ export type Product = {
 
 export enum Vendor {
   GLOBAL_DATA,
-  PCDIGA
+  PCDIGA,
+  PC_COMPONENTES
 }
 
 export type VendorEntry = {

@@ -6,6 +6,8 @@ export const VendorToString = (vendor: Vendor): string => {
       return "GlobalData";
     case Vendor.PCDIGA:
       return "PcDiga";
+    case Vendor.PC_COMPONENTES:
+      return "PcComponentes";
     default:
       return "Unknown Vendor";
   }
