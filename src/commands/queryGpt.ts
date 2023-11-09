@@ -10,7 +10,7 @@ export default {
     builder
     .setName('model')
     .setDescription('the gpt model to use')
-    .setChoices({ name: 'gpt-3.5-turbo', value: 'gpt-3.5-turbo'}, { name: 'gpt-4 regular', value: 'gpt-4' })
+    .setChoices({ name: 'gpt-3.5-turbo', value: 'gpt-3.5-turbo'}, { name: 'gpt-4 regular', value: 'gpt-4' }, { name: 'gpt-4 turbo', value: 'gpt4-1106-preview' })
   )
   .addStringOption(builder => 
     builder
