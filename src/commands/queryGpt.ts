@@ -48,7 +48,7 @@ export default {
           if(i === 0) {
             await interaction.editReply(message);
           } else {
-            await interaction.channel?.send(message);
+            await interaction.user.send(message);
           }
         }
       }
